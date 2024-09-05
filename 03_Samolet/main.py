@@ -1,6 +1,10 @@
 import streamlit as st
 import pandas as pd
 from general import *
+from weather import WeatherService
+
+# Инициализация сервиса с температурой
+WS = WeatherService()  # Тут можно указать другой город (координаты)
 
 # Инициализация таблицы
 df = load_data()
@@ -36,7 +40,8 @@ if st.button("Зафиксировать эти новости", key="add_button
         new_row = pd.DataFrame({
             "день недели": [day_of_week],
             "дерево": [tree_name],
-            "кол-во плодов": [int(fruits_count)]
+            "кол-во плодов": [int(fruits_count)],
+            "погодка в °C": [WS.get_temperature_by_weekday(day_of_week)]
         })
         # Используем pd.concat для добавления новой строки к существующему DataFrame
         df = pd.concat([df, new_row], ignore_index=True)
@@ -62,15 +67,15 @@ if not df.empty:
         df,
         column_config={
             "день недели": st.column_config.SelectboxColumn(
-                "День недели",  # Заголовок
+                "День недели",
                 options=days_of_week  # Опции для выбора
             ),
             "дерево": st.column_config.TextColumn(
-                "Дерево",  # Заголовок
+                "Дерево",
                 max_chars=50  # Максимальное количество символов
             ),
             "кол-во фруктов": st.column_config.NumberColumn(
-                "Кол-во плодов",  # Заголовок
+                "Кол-во плодов",
                 min_value=1  # Ограничение на минимальное значение
             ),
             "Удалить": st.column_config.CheckboxColumn("Выделение")  # Добавляем столбец с чекбоксами для удаления
@@ -86,7 +91,7 @@ if not df.empty:
         df = edited_df[edited_df["Удалить"] == False].drop(columns=["Удалить"])
         save_data(df)
         st.success("Мы больше такого не помним!")
-        st.rerun()  # Перезагружаем интерфейс после удаления
+        st.rerun()
 
     # Сохраняем изменения, если таблица редактировалась
     if edited_df is not None:
@@ -98,6 +103,10 @@ if not df.empty:
 
     # ГРАФИКИ
     display_graph(df)
+
+    st.markdown("---")
+
+    display_weather_graph(df)
 
     st.markdown("---")
 

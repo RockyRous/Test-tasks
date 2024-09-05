@@ -10,7 +10,7 @@ def load_data():
     if os.path.exists('data.csv'):
         return pd.read_csv('data.csv')
     else:
-        return pd.DataFrame(columns=["день недели", "дерево", "кол-во плодов"])
+        return pd.DataFrame(columns=["день недели", "дерево", "кол-во плодов", "погодка в °C"])
 
 
 def save_data(df):
@@ -57,6 +57,13 @@ def display_graph(df):
     st.write("### Линейный график количества фруктов по дням недели")
     st.line_chart(line_chart_data.set_index("день недели")["кол-во плодов"])
 
+
+def display_weather_graph(df):
+    """ График температуры по дням недели """
+    # line_chart_data = df.groupby("день недели").mean().reset_index()  # mean() - среднее значение
+    line_chart_data = df.groupby("день недели").last().reset_index()  # last() - последнее значение
+    st.write("### Линейный график температуры по дням недели")
+    st.line_chart(line_chart_data.set_index("день недели")["погодка в °C"])
 
 def display_linear_regression(df, days_of_week):
     """ Линейная регрессия (простое прогнозирование) """
@@ -111,4 +118,5 @@ def display_correlation_analysis(df):
         st.image('https://i.ibb.co/jMFt7hv/stonk.jpg',
                  caption='*stonk',
                  use_column_width=True)
+
 
