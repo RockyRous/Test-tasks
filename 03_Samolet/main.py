@@ -74,9 +74,17 @@ if not df.empty:
                 "Дерево",
                 max_chars=50  # Максимальное количество символов
             ),
-            "кол-во фруктов": st.column_config.NumberColumn(
+            "кол-во плодов": st.column_config.NumberColumn(
                 "Кол-во плодов",
                 min_value=1  # Ограничение на минимальное значение
+            ),
+            "погодка в °C": st.column_config.NumberColumn(
+                "Погодка в °C",
+                disabled=True,  # Отключает редактирование
+            ),
+            "день недели_num": st.column_config.NumberColumn(
+                "Номер дня недели",
+                disabled=True,
             ),
             "Удалить": st.column_config.CheckboxColumn("Выделение")  # Добавляем столбец с чекбоксами для удаления
         },
