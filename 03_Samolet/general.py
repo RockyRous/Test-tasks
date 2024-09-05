@@ -5,29 +5,28 @@ from sklearn.linear_model import LinearRegression
 import os
 
 
-
-# Загрузка или создание таблицы
 def load_data():
+    """ Загрузка или создание таблицы """
     if os.path.exists('data.csv'):
         return pd.read_csv('data.csv')
     else:
         return pd.DataFrame(columns=["день недели", "дерево", "кол-во плодов"])
 
 
-# Сохранение таблицы
 def save_data(df):
+    """ Сохранение таблицы """
     df.to_csv('data.csv', index=False)
 
 
-# Вспомогательная функция для проверки на натуральное число
 def is_natural_number(val):
+    """ Проверка на натуральное число """
     try:
         return int(val) >= 0
     except:
         return False
 
 
-# Определите CSS стиль в зависимости от состояния тумблера
+# CSS стиль для смен фона
 background_css = """
     <style>
     .main {
@@ -47,15 +46,14 @@ default_css = """
 
 
 def display_graph(df):
+    """ График количества плодов по деревьям и Линейный график количества фруктов по дням недели """
     # Создание агрегированных данных по "дерево" и "кол-во фруктов"
     chart_data = df.groupby(["день недели", "дерево"]).sum().reset_index()
-    # Построение графика
     st.write("### График количества плодов по деревьям")
     st.bar_chart(chart_data.pivot(index="день недели", columns="дерево", values="кол-во плодов"))
 
     # Создание агрегированных данных по дням недели
     line_chart_data = df.groupby("день недели").sum().reset_index()
-    # Построение линейного графика
     st.write("### Линейный график количества фруктов по дням недели")
     st.line_chart(line_chart_data.set_index("день недели")["кол-во плодов"])
 
@@ -84,7 +82,7 @@ def display_linear_regression(df, days_of_week):
     # Сортировка по дням недели
     future_days["день недели"] = pd.Categorical(future_days["день недели"], categories=days_of_week, ordered=True)
     future_days = future_days.sort_values("день недели")
-    # Отображение графика
+
     st.write("### Прогноз количества плодов на следующие дни недели")
     st.line_chart(future_days.set_index("день недели")["кол-во плодов"])
 
@@ -92,7 +90,6 @@ def display_correlation_analysis(df):
     """ Корреляционный анализ """
     # Вычисление корреляции
     correlation = df[["день недели_num", "кол-во плодов"]].corr().iloc[0, 1]
-    # Отображение результата
     st.write(f"### Корреляция между днем недели и количеством плодов: {correlation:.2f}")
 
     st.markdown("---")

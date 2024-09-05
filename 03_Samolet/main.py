@@ -5,10 +5,8 @@ from general import *
 # Инициализация таблицы
 df = load_data()
 
-# Определение CSS стиля для фона
-# Создайте тумблер
+# Создайте тумблер определения CSS стиля для фона
 use_custom_background = st.checkbox("Использовать кастомный фон для темной темы (16:9 и не подгоняется :С )", value=False)
-# Примените CSS стиль в зависимости от состояния тумблера
 if use_custom_background:
     st.markdown(background_css, unsafe_allow_html=True)
 else:
@@ -18,14 +16,13 @@ else:
 st.title("Контроль плодов с деревьев Агафьи Алексеевны")
 st.write("Здравствуйте Агафья Алексеевна! Как у вас дела?")
 
-# Поля для добавления новой записи
+# Добавления новой записи
 st.markdown("---")
 st.write("### Давайте запишем новые данные:")
 day_of_week = st.selectbox("День недели", ["Понедельник", "Вторник", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"], key="add_day_of_week")
 tree_name = st.text_input("Название вашего дерева", key="add_tree_name")
 fruits_count = st.text_input("Кол-во плодов с него", value="1", key="add_fruits_count")
 
-# Добавление новой записи
 if st.button("Зафиксировать эти новости", key="add_button"):
     # Валидация полей
     if len(tree_name) > 50:
@@ -109,4 +106,4 @@ if not df.empty:
     display_correlation_analysis(df)
 
 else:
-    st.write("Таблица пуста.")
+    st.write("### Мы ничего еще не знаем, если бы мы что-то знали но мы еще ничего не знаем\nТаблица пуста")
