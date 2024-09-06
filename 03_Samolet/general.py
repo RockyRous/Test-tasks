@@ -3,19 +3,30 @@ import pandas as pd
 import numpy as np
 from sklearn.linear_model import LinearRegression
 import os
+from sqlalchemy import create_engine, inspect
+
+# Создаем подключение к базе данных SQLite
+engine = create_engine('sqlite:///data.db')
 
 
 def load_data():
     """ Загрузка или создание таблицы """
-    if os.path.exists('data.csv'):
-        return pd.read_csv('data.csv')
+    # Инспектируем базу данных для проверки наличия таблицы
+    inspector = inspect(engine)
+
+    if not inspector.has_table('log_data'):
+        # Если таблицы нет, создаем пустую DataFrame с нужными колонками
+        df = pd.DataFrame(columns=["день недели", "дерево", "кол-во плодов", "погодка в °C"])
     else:
-        return pd.DataFrame(columns=["день недели", "дерево", "кол-во плодов", "погодка в °C"])
+        # Если таблица есть, загружаем её в DataFrame
+        df = pd.read_sql('log_data', engine)
+    return df
 
 
 def save_data(df):
     """ Сохранение таблицы """
-    df.to_csv('data.csv', index=False)
+    # Сохраняем данные в таблицу, если её нет — создается автоматически
+    df.to_sql('log_data', engine, if_exists='replace', index=False)
 
 
 def is_natural_number(val):
